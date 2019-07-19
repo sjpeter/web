@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <ul>
+      <li v-for="(item, index) in list" :key="index">
+        <div>{{item}}</div>
+      </li>
+    </ul>
+    <current-user>
+      <h5>插槽</h5>
+      <template v-slot:person>person.firstName</template>
+      <template v-slot:user>{{user.firstName}}</template>
+    </current-user>
+    <current-user v-slot:user="users">
+      <h5>插槽变量传递</h5>
+      {{users.firstName}}
+    </current-user>
+    <div>
+      <h5>非作用域插槽参数</h5>
+      <current v-slot="users">
+        {{users.firstName}}
+      </current>
+    </div>
+    <current v-slot="{users}">
+      <h5>作用域插槽参数</h5>
+      {{users.firstName}}
+    </current>
+    <current v-slot="{users: person}">
+      <h5>作用域插槽参数名变换</h5>
+      {{person.firstName}}
+    </current>
+    <current v-slot="{ persons = { firstName: 'Peterss' } }">
+      <h5>作用域插槽参数自我赋值</h5>
+      {{persons.firstName}}
+    </current>
+    <current-prop v-slot="{users}" :userp="user">
+      <h5>作用域插槽prop用于传递参数</h5>
+      {{users.firstName}}
+    </current-prop>
+  </div>
+</body>
+<script type="text/javascript">
+  Vue.component('current-user', {
+    data: function () {
+      return {
+        num: '00120'
+      }
+    },
+    template: '<div> <slot name="person"></slot> <slot name="user" :firstName="num"></slot> </div>'
+  })
+  Vue.component('current', {
+    data: function () {
+      return {
+        num: 0,
+        user: {
+          firstName: 'Jian'
+        }
+      }
+    },
+    template: '<div><slot :users="user"></slot> </div>'
+  })
+  Vue.component('current-prop', {
+    props: ['userp'],
+    data: function () {
+      return {
+        num: 0
+      }
+    },
+    template: '<div><slot :users="userp"></slot> </div>'
+  })
+  var vue = new Vue({
+    el: '#app',
+    data: {
+      list: [ 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      user: {
+        firstName: 'Jian'
+      }
+    }
+  })
+  
+</script>
+</html>
